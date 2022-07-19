@@ -2,14 +2,13 @@ import type {SimpleCommandMessage} from "discordx";
 import {
     ButtonComponent,
     Client,
-    Discord, Permission,
+    Discord,
     SimpleCommand, SimpleCommandOption, SimpleCommandOptionType
 } from "discordx";
-import {ButtonInteraction, GuildMember, MessageActionRow, MessageButton, MessageEmbed} from "discord.js";
+import {ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed} from "discord.js";
 
 @Discord()
 export class Verify {
-    @Permission({id: "904365748787478568", type: "ROLE", permission: true})
     @SimpleCommand("verify", {aliases: ["v"]})
     verify(
         @SimpleCommandOption("create", {type: SimpleCommandOptionType.String})
@@ -17,6 +16,13 @@ export class Verify {
         command: SimpleCommandMessage,
         client: Client
     ): void {
+        let isAdmin = command.message.member?.roles.cache.has('904365748787478568');
+
+        if (!isAdmin) {
+            command.message.reply({content: 'You do not have permission to use the function.'});
+            return;
+        }
+
         if (create) {
             let verifyEmbed = new MessageEmbed()
                 .setColor(9676198)
